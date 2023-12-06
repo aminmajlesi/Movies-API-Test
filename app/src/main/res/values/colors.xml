@@ -2,4 +2,13 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="color_shimmer">#6DFFFFFF</color>
+    <color name="background_for_library_shimmer">#A8A5A8</color>
+    <color name="transparent_color_category">#7A454663</color>
+    <color name="white_lower_opacity">#CCFFFFFF</color>
+    <color name="white_very_lower_opacity">#6DFFFFFF</color>
+    <color name="background_set_click_items">#99111114</color>
+
+
 </resources>

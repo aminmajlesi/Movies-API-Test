@@ -77,6 +77,10 @@ dependencies {
 
     // Shimmer
     implementation("com.facebook.shimmer:shimmer:0.5.0")
-    implementation("com.todkars:shimmer-recyclerview:0.4.1")
+//    implementation("com.todkars:shimmer-recyclerview:0.4.1")
+
+    //roundedimageview
+    implementation("com.makeramen:roundedimageview:2.3.0")
+
 
 }
