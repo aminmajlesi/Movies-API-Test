@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.moviesapitest.databinding.ItemMoviesListBinding
 import com.example.moviesapitest.models.Search
+import com.example.moviesapitest.ui.MovieViewModel
 
 class MovieAdapter() : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
 
@@ -25,12 +26,12 @@ class MovieAdapter() : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
         }
 
     }
-    //lateinit var movieViewModel: MovieViewModel
+    lateinit var movieViewModel: MovieViewModel
 
 
     private val differCallBack = object : DiffUtil.ItemCallback<Search>() {
         override fun areItemsTheSame(oldItem: Search, newItem: Search): Boolean {
-            return oldItem.Title == newItem.Title
+            return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(oldItem: Search, newItem: Search): Boolean {
