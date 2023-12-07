@@ -9,6 +9,8 @@ class MovieRepository(
 ) {
     suspend fun getBatmanMovies() = RetrofitInstance.api.getBatmanMovies()
 
-    suspend fun upsert(search: Search) = db.getMovieDao().upsert(search)
+    suspend fun upsertMovie(search: Search) = db.getMovieDao().upsert(search)
+
+    fun getMoviesFromDB() = db.getMovieDao().getAllMovies()
 
 }

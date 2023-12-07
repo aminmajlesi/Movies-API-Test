@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import java.io.Serializable
 
 @Entity(
-    tableName = "movie_table" ,indices = [Index(value = ["id"], unique = true)])
+    tableName = "movie_table" ,indices = [Index(value = ["imdbID"], unique = true)])
 data class Search(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
@@ -15,4 +15,4 @@ data class Search(
     val Type: String,
     val Year: String,
     val imdbID: String
-): Serializable
+)

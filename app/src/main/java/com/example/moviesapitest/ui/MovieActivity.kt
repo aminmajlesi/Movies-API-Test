@@ -2,13 +2,20 @@ package com.example.moviesapitest.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
+import androidx.lifecycle.Observer
 
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.moviesapitest.adapters.MovieAdapter
 import com.example.moviesapitest.databinding.ActivityMoviesBinding
 import com.example.moviesapitest.db.MovieDatabase
 import com.example.moviesapitest.repository.MovieRepository
+import com.example.moviesapitest.util.InternetUtils
+import com.example.moviesapitest.util.Resource
+import kotlinx.coroutines.launch
 
 class MovieActivity : AppCompatActivity() {
 
@@ -42,54 +49,43 @@ class MovieActivity : AppCompatActivity() {
             adapter = movieAdapter
             layoutManager = LinearLayoutManager(this@MovieActivity)
         }
-
     }
-
 
 
     private fun initObservers() {
 
-        viewModel.movieList.observe(this) { movieList ->
-            movieAdapter.differ.submitList(movieList)
-            viewModel.saveMoviesList(movieList)
-        }
-
-//        viewModel.readMessage.observeOnce(viewLifecycleOwner) { database ->
-//            if (database.isNotEmpty()) {
-//                Log.d("dataState", "readDatabase called  ")
-//                newsAdapter.differ.submitList(database)
-//                hideShimmerEffect()
-//            }
-//            getBreakingNews()
-//        }
-
-
-//        viewModel.movieList.observe(this, Observer { response ->
-//            when(response) {
-//                is Resource.Success -> {
-//                    //hideProgressBar()
-//                    response.data?.let { movieResponse ->
-//                        movieAdapter.differ.submitList(movieResponse.data.toList())
+        if (InternetUtils.hasInternetConnection(this)) {
+//            getBatmanMovies()
+//            viewModel.movieList.observe(this,Observer { response ->
+//                when (response) {
+//                    is Resource.Success<*> -> {
+////                    response.data?.let { movieResponse ->
+////                        movieAdapter.differ.submitList(movieResponse.data.toList())
+////                    }
+//                        movieAdapter.differ.submitList(response)
 //                    }
-//                }
-//                is Resource.Error -> {
-//                    //hideProgressBar()
+//                    is Resource.Error<*> -> {
+//
 //                    response.search?.let { message ->
 //                        Toast.makeText(this, "An error occured: $message", Toast.LENGTH_LONG).show()
 //                    }
+//
+//                    }
+//                    is Resource.Loading<*> -> {
+//
+//                    }
 //                }
-//                is Resource.Loading -> {
-//                    //showProgressBar()
-//                }
-//            }
-//        })
+//            })
 
 
+            viewModel.movieList.observe(this) { movieList ->
+                movieAdapter.differ.submitList(movieList)
+                viewModel.saveMoviesList(movieList)
+            }
 
-
-
-
-
+        } else {
+            loadDataFromCache()
+        }
 
     }
 
@@ -125,15 +121,19 @@ class MovieActivity : AppCompatActivity() {
 //        }
 //    }
 
-//    private fun loadDataFromCache() {
-//        lifecycleScope.launch {
-//            viewModel.readMessage.observe(viewLifecycleOwner) { database ->
-//                if (database.isNotEmpty()) {
-//                    newsAdapter.differ.submitList(database)
-//                }
-//            }
-//        }
-//    }
+    private fun loadDataFromCache() {
+        lifecycleScope.launch {
+            viewModel.getMoviesFromDB().observe(this@MovieActivity) { database ->
+                if (database.isNotEmpty()) {
+                    movieAdapter.differ.submitList(database)
+                }
+            }
+        }
+
+
+
+
+    }
 
 //    private fun showShimmerEffect() {
 //        binding.rvMovies.showShimmer()
@@ -142,16 +142,6 @@ class MovieActivity : AppCompatActivity() {
 //    private fun hideShimmerEffect() {
 //        binding.rvMovies.hideShimmer()
 //    }
-
-//    fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>){
-//        observe(lifecycleOwner,object :Observer<T> {
-//            override fun onChanged(t: T) {
-//                removeObserver(this)
-//                observer.onChanged(t)
-//            }
-//        })
-//    }
-
 
 
 }

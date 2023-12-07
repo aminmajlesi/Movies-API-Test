@@ -59,10 +59,18 @@ class MovieAdapter() : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
         val movie = differ.currentList[position]
         holder.bindItem(movie)
 
-//        holder.itemView.apply {
-//
-//        }
+        holder.itemView.apply {
+            setOnClickListener {
+                onItemClickListener?.let { it(movie) }
+            }
+        }
 
+    }
+
+    private var onItemClickListener: ((Search) -> Unit)? = null
+
+    fun setOnItemClickListener(listener: (Search) -> Unit) {
+        onItemClickListener = listener
     }
 
 }

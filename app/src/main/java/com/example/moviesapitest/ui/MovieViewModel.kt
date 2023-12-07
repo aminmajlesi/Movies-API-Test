@@ -6,6 +6,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.moviesapitest.models.MovieResponse
@@ -32,7 +33,7 @@ class MovieViewModel(
         try {
             val response = movieRepository.getBatmanMovies()
             if (response.isSuccessful) {
-                Log.d("dataState", "getBreakingNews called  ")
+                Log.d("dataState", "getBatmanMovies called  ")
                 movieList.value = response.body()?.Search
             } else {
                 // handle error
@@ -42,7 +43,7 @@ class MovieViewModel(
     }
 
     fun saveMovies(search: Search) = viewModelScope.launch {
-        movieRepository.upsert(search)
+        movieRepository.upsertMovie(search)
     }
 
     fun saveMoviesList(moviesList: List<Search>?) {
@@ -51,6 +52,10 @@ class MovieViewModel(
                 saveMovies(movie)
             }
         }
+    }
+
+    fun getMoviesFromDB() : LiveData<List<Search>> {
+        return movieRepository.getMoviesFromDB()
     }
 
 
@@ -64,22 +69,7 @@ class MovieViewModel(
         return Resource.Error(response.message())
     }
 
-    private fun hasInternetConnection(): Boolean {
-        val connectivityManager = getApplication<Application>().getSystemService(
-            Context.CONNECTIVITY_SERVICE
-        ) as ConnectivityManager
 
-        val activeNetwork = connectivityManager.activeNetwork ?: return false
-        val capabilities = connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
-
-        return when {
-            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
-            else -> false
-        }
-
-    }
 
 
 }

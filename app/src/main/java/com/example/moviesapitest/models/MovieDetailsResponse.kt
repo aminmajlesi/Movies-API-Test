@@ -1,6 +1,16 @@
 package com.example.moviesapitest.models
 
+import androidx.room.Entity
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "movie_details_table",
+    indices = [Index(value = ["imdbID"], unique = true)]
+)
 data class MovieDetailsResponse(
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
     val Actors: String,
     val Awards: String,
     val BoxOffice: String,
