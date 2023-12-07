@@ -10,7 +10,7 @@ import com.example.moviesapitest.databinding.ItemMoviesListBinding
 import com.example.moviesapitest.models.Search
 import com.example.moviesapitest.ui.MovieViewModel
 
-class MovieAdapter() : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
+class MovieAdapter(val onClick: (Search) -> Unit) : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
 
     inner class MovieViewHolder(val binding: ItemMoviesListBinding): RecyclerView.ViewHolder(binding.root) {
         fun bindItem(movie:Search) {

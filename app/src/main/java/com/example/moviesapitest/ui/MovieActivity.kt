@@ -1,5 +1,6 @@
 package com.example.moviesapitest.ui
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -39,15 +40,27 @@ class MovieActivity : AppCompatActivity() {
 
         setupRecyclerView()
         initObservers()
+
     }
 
 
     private fun setupRecyclerView() {
-        movieAdapter = MovieAdapter()
+        movieAdapter = MovieAdapter(
+            onClick = {
+                MovieDetailsActivity.showActivity(this@MovieActivity, it.imdbID!!)
+            }
+        )
 
         binding.rvMovies.apply {
             adapter = movieAdapter
             layoutManager = LinearLayoutManager(this@MovieActivity)
+        }
+
+
+        movieAdapter.setOnItemClickListener {
+            val intent = Intent(this@MovieActivity, MovieDetailsActivity::class.java)
+            //intent.putExtra("imdbID",imdbID)
+            startActivity(intent)
         }
     }
 
