@@ -21,16 +21,21 @@ class MovieDetailsViewModel(
     val movieDetails: MutableLiveData<Resource<MovieDetailsResponse>> = MutableLiveData()
     var movieDetailsList: MutableLiveData<List<MovieDetailsResponse>> = MutableLiveData()
 
+
+    init {
+        getBatmanMoviesDetails()
+    }
+
     fun getBatmanMoviesDetails() = viewModelScope.launch {
         try {
             val response = movieDetailsRepository.getBatmanMoviesDetails(imdbID)
             if (response.isSuccessful) {
                 Log.d("dataState", "getBatmanMovies called  ")
-                //movieDetails.value = response.body()?
+                //movieDetailsList.value = response.body()?.
                 movieDetails.postValue(Resource.Success(response.body()!!))
             } else {
                 // handle error
-                movieDetails.postValue(Resource.Error("Error occurred"))
+                //movieDetails.postValue(Resource.Error("Error occurred"))
             }
         } catch (e: Exception) {
             movieDetails.postValue(e.message?.let { Resource.Error(it) })
@@ -49,7 +54,7 @@ class MovieDetailsViewModel(
         }
     }
 
-    fun getMovieDetailFromDB(imdbID: String) : LiveData<MovieDetailsResponse> {
+    fun getMovieDetailFromDB() : LiveData<MovieDetailsResponse> {
         return movieDetailsRepository.getMoviesDetailsFromDB(imdbID)
     }
 

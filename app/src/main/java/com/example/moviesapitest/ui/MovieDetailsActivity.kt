@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -30,22 +31,24 @@ class MovieDetailsActivity : AppCompatActivity() {
         val viewModelProviderFactory = MovieDetailsViewModelProviderFactory(application,movieDetailsRepository)
         viewModel = ViewModelProvider(this, viewModelProviderFactory).get(MovieDetailsViewModel::class.java)
 
+        handleIntent()
         initObservers()
+
     }
 
-//    private fun handleIntent() {
-//        intent.extras?.apply {
-//            if (containsKey(EXTRA_VIDEO))
-//                viewModel.imdbId = this.getString(EXTRA_VIDEO)!!
-//        }
-//    }
+    private fun handleIntent() {
+        intent.extras?.apply {
+            if (containsKey(EXTRA_VIDEO))
+                viewModel.imdbID = this.getString(EXTRA_VIDEO)!!
+        }
+    }
     private fun initObservers() {
         if (InternetUtils.hasInternetConnection(this)){
             viewModel.getBatmanMoviesDetails()
             viewModel.movieDetails.observe(this, Observer { response ->
                 when (response) {
                     is Resource.Success -> {
-
+                        Toast.makeText(this, "success: $response", Toast.LENGTH_LONG).show()
                         response.data?.let {
                             setDataOnView(
                                 it.Title,response.data.Year,response.data.Rated,
@@ -57,7 +60,12 @@ class MovieDetailsActivity : AppCompatActivity() {
                         }
                     }
                     is Resource.Error -> {
-                        Toast.makeText(this, "An error occured: $response", Toast.LENGTH_LONG).show()
+
+                        response.search?.let { message ->
+                            Log.e("movie", "initObservers: $message" )
+                            Toast.makeText(this, "An error occured: $message", Toast.LENGTH_LONG).show()
+                        }
+                        //Toast.makeText(this, "An error occured: $mess", Toast.LENGTH_LONG).show()
 
                     }
                     is Resource.Loading -> {
@@ -65,8 +73,14 @@ class MovieDetailsActivity : AppCompatActivity() {
                     }
                 }
             })
-        } else {
 
+//            viewModel.movieDetailsList.observe(this) { movieList ->
+//                //movieAdapter.differ.submitList(movieList)
+//                viewModel.saveMovieDetailsList(movieList)
+//            }
+
+        } else {
+            loadFromCache()
         }
 
     }
@@ -78,7 +92,7 @@ class MovieDetailsActivity : AppCompatActivity() {
                               rating: List<Rating>, poster: String) {
         binding.tvMovieTitleDetails.text = title
         binding.tvMovieYearDetails.text = year
-        //binding.tvMovieTitleDetails.text = rated
+        binding.tvMovieAgeDetails.text = rated
         //binding.tvMovieTitleDetails.text = release
         //binding.tvMovieTitleDetails.text = boxOffice
         binding.tvMovieCastDetails.text = actors
@@ -87,11 +101,29 @@ class MovieDetailsActivity : AppCompatActivity() {
         binding.tvMovieGenreDetails.text = genre
         binding.tvMovieLanguageDetails.text = language
         binding.tvMovieStoryDetails.text = plot
-        //binding.tvMovieTitleDetails.text = runTime
+        binding.tvMovieTimeDetails.text = runTime
         //binding.tvMovieTitleDetails.text = type
         //binding.tvMovieTitleDetails.text = webSite
         //binding.tvMovieTitleDetails.text = writers
         Glide.with(this).load(poster).into(binding.ivMoviePictureDetails)
+    }
+
+    private fun loadFromCache() {
+        viewModel.getMovieDetailFromDB().observe(this, Observer { filmDB ->
+            Log.i("internet","is off")
+            if (filmDB != null){
+                setDataOnView(filmDB.Title,filmDB.Year,filmDB.Rated,filmDB.Released
+                    ,filmDB.BoxOffice,filmDB.Actors,filmDB.Country,filmDB.Director,
+                    filmDB.Genre,filmDB.Language,filmDB.Plot,filmDB.Runtime,
+                    filmDB.Type,filmDB.Website,filmDB.Writer,filmDB.Ratings,filmDB.Poster)
+            }else {
+                Toast.makeText(
+                    applicationContext,
+                    "there is no data please turn on your internet", Toast.LENGTH_SHORT
+                ).show()
+            }
+
+        })
     }
 
     companion object {

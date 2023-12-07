@@ -5,6 +5,7 @@ import com.example.moviesapitest.models.MovieResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface MovieAPI {
 
@@ -13,9 +14,11 @@ interface MovieAPI {
 
     ): Response<MovieResponse>
 
-    @GET("?apikey=3e974fca&i={imdbID}")
+    @GET(".")
     suspend fun getBatmanMoviesDetails(
-        @Path("imdbID")
-        imdbID: String
+        @Query("apikey")
+        apikey: String = "3e974fca",
+        @Query("i")
+        imdbID: String,
     ): Response<MovieDetailsResponse>
 }

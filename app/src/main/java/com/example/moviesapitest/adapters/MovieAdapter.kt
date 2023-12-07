@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.moviesapitest.databinding.ItemMoviesListBinding
 import com.example.moviesapitest.models.Search
-import com.example.moviesapitest.ui.MovieViewModel
 
 class MovieAdapter(val onClick: (Search) -> Unit) : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
 
@@ -26,7 +25,7 @@ class MovieAdapter(val onClick: (Search) -> Unit) : RecyclerView.Adapter<MovieAd
         }
 
     }
-    lateinit var movieViewModel: MovieViewModel
+    //lateinit var movieViewModel: MovieViewModel
 
 
     private val differCallBack = object : DiffUtil.ItemCallback<Search>() {
@@ -59,18 +58,23 @@ class MovieAdapter(val onClick: (Search) -> Unit) : RecyclerView.Adapter<MovieAd
         val movie = differ.currentList[position]
         holder.bindItem(movie)
 
-        holder.itemView.apply {
-            setOnClickListener {
-                onItemClickListener?.let { it(movie) }
-            }
+//        holder.itemView.apply {
+//            setOnClickListener {
+//                //onItemClickListener?.let { it(movie) }
+//                onClick(movie)
+//            }
+//        }
+
+        holder.itemView.setOnClickListener {
+            onClick(movie)
         }
 
     }
 
-    private var onItemClickListener: ((Search) -> Unit)? = null
-
-    fun setOnItemClickListener(listener: (Search) -> Unit) {
-        onItemClickListener = listener
-    }
+//    private var onItemClickListener: ((Search) -> Unit)? = null
+//
+//    fun setOnItemClickListener(listener: (Search) -> Unit) {
+//        onItemClickListener = listener
+//    }
 
 }

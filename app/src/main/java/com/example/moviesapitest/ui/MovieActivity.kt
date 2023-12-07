@@ -57,11 +57,11 @@ class MovieActivity : AppCompatActivity() {
         }
 
 
-        movieAdapter.setOnItemClickListener {
-            val intent = Intent(this@MovieActivity, MovieDetailsActivity::class.java)
-            //intent.putExtra("imdbID",imdbID)
-            startActivity(intent)
-        }
+//        movieAdapter.setOnItemClickListener {
+//            val intent = Intent(this@MovieActivity, MovieDetailsActivity::class.java)
+//            //intent.putExtra("imdbID",imdbID)
+//            startActivity(intent)
+//        }
     }
 
 
