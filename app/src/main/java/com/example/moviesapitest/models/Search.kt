@@ -3,7 +3,6 @@ package com.example.moviesapitest.models
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import java.io.Serializable
 
 @Entity(
     tableName = "movie_table" ,indices = [Index(value = ["imdbID"], unique = true)])

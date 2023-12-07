@@ -72,6 +72,7 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:text="imdb"
+        android:visibility="gone"
         android:textColor="@color/black"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@id/tvMoviesType"

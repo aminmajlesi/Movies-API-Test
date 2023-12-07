@@ -1,9 +1,9 @@
 package com.example.moviesapitest.ui
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
 
@@ -23,6 +23,7 @@ class MovieActivity : AppCompatActivity() {
     lateinit var binding: ActivityMoviesBinding
     lateinit var movieAdapter: MovieAdapter
     lateinit var viewModel: MovieViewModel
+    var isLoading = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,17 +33,14 @@ class MovieActivity : AppCompatActivity() {
         setContentView(view)
         //setContentView(R.layout.activity_main)
 
-
-
         val movieRepository = MovieRepository(MovieDatabase(this))
-        val viewModelProviderFactory = MovieViewModelProviderFactory(application,movieRepository)
-        viewModel = ViewModelProvider(this, viewModelProviderFactory).get(MovieViewModel::class.java)
+        val viewModelProviderFactory = MovieViewModelProviderFactory(application, movieRepository)
+        viewModel =
+            ViewModelProvider(this, viewModelProviderFactory).get(MovieViewModel::class.java)
 
         setupRecyclerView()
         initObservers()
-
     }
-
 
     private fun setupRecyclerView() {
         movieAdapter = MovieAdapter(
@@ -50,45 +48,40 @@ class MovieActivity : AppCompatActivity() {
                 MovieDetailsActivity.showActivity(this@MovieActivity, it.imdbID!!)
             }
         )
-
         binding.rvMovies.apply {
             adapter = movieAdapter
             layoutManager = LinearLayoutManager(this@MovieActivity)
         }
-
-
-//        movieAdapter.setOnItemClickListener {
-//            val intent = Intent(this@MovieActivity, MovieDetailsActivity::class.java)
-//            //intent.putExtra("imdbID",imdbID)
-//            startActivity(intent)
-//        }
     }
 
 
     private fun initObservers() {
 
         if (InternetUtils.hasInternetConnection(this)) {
-//            getBatmanMovies()
-//            viewModel.movieList.observe(this,Observer { response ->
-//                when (response) {
-//                    is Resource.Success<*> -> {
-////                    response.data?.let { movieResponse ->
-////                        movieAdapter.differ.submitList(movieResponse.data.toList())
-////                    }
-//                        movieAdapter.differ.submitList(response)
-//                    }
-//                    is Resource.Error<*> -> {
-//
-//                    response.search?.let { message ->
-//                        Toast.makeText(this, "An error occured: $message", Toast.LENGTH_LONG).show()
-//                    }
-//
-//                    }
-//                    is Resource.Loading<*> -> {
-//
-//                    }
-//                }
-//            })
+            getBatmanMovies()
+            viewModel.movie.observe(this, Observer { response ->
+                when (response) {
+                    is Resource.Success -> {
+                        hideProgressBar()
+                        response.data?.let { movieResponse ->
+                            movieAdapter.differ.submitList(movieResponse.Search)
+                        }
+                    }
+
+                    is Resource.Error -> {
+                        hideProgressBar()
+                        response.search?.let { message ->
+                            Toast.makeText(this, "An error occured: $message", Toast.LENGTH_LONG)
+                                .show()
+                        }
+
+                    }
+
+                    is Resource.Loading -> {
+                        showProgressBar()
+                    }
+                }
+            })
 
 
             viewModel.movieList.observe(this) { movieList ->
@@ -102,37 +95,9 @@ class MovieActivity : AppCompatActivity() {
 
     }
 
-
-    private fun getBatmanMovies(){
+    private fun getBatmanMovies() {
         viewModel.getBatmanMovies()
     }
-
-//    private fun requestApiData() {
-//        Log.d("dataState", "requestApiData called  ")
-//        viewModel.movie.observe(viewLifecycleOwner) { response ->
-//            when (response) {
-//                is Resource.Success -> {
-//                    //hideShimmerEffect()
-//                    response.data?.let { movieResponse ->
-//                        movieAdapter.differ.submitList(movieResponse.Search)
-//                    }
-//                }
-//                is Resource.Error -> {
-//                    //hideShimmerEffect()
-//                    //loadDataFromCache()
-//                    Toast.makeText(
-//                        this,
-//                        response.search.toString(),
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//                }
-//                is Resource.Loading -> {
-//                    //showShimmerEffect()
-//                }
-//            }
-//
-//        }
-//    }
 
     private fun loadDataFromCache() {
         lifecycleScope.launch {
@@ -142,19 +107,17 @@ class MovieActivity : AppCompatActivity() {
                 }
             }
         }
-
-
-
-
     }
 
-//    private fun showShimmerEffect() {
-//        binding.rvMovies.showShimmer()
-//    }
-//
-//    private fun hideShimmerEffect() {
-//        binding.rvMovies.hideShimmer()
-//    }
+    private fun hideProgressBar() {
+        binding.paginationProgressBar.visibility = View.INVISIBLE
+        isLoading = false
+    }
+
+    private fun showProgressBar() {
+        binding.paginationProgressBar.visibility = View.VISIBLE
+        isLoading = true
+    }
 
 
 }

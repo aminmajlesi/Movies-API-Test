@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -19,6 +20,7 @@ import com.example.moviesapitest.util.Resource
 class MovieDetailsActivity : AppCompatActivity() {
     lateinit var binding: ActivityMovieDetailsBinding
     lateinit var viewModel: MovieDetailsViewModel
+    var isLoading = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,12 +45,13 @@ class MovieDetailsActivity : AppCompatActivity() {
         }
     }
     private fun initObservers() {
-        if (InternetUtils.hasInternetConnection(this)){
+        if (InternetUtils.hasInternetConnection(this)) {
             viewModel.getBatmanMoviesDetails()
             viewModel.movieDetails.observe(this, Observer { response ->
                 when (response) {
                     is Resource.Success -> {
-                        Toast.makeText(this, "success: $response", Toast.LENGTH_LONG).show()
+                        hideProgressBar()
+
                         response.data?.let {
                             setDataOnView(
                                 it.Title,response.data.Year,response.data.Rated,
@@ -60,24 +63,21 @@ class MovieDetailsActivity : AppCompatActivity() {
                         }
                     }
                     is Resource.Error -> {
-
+                        hideProgressBar()
                         response.search?.let { message ->
                             Log.e("movie", "initObservers: $message" )
                             Toast.makeText(this, "An error occured: $message", Toast.LENGTH_LONG).show()
                         }
-                        //Toast.makeText(this, "An error occured: $mess", Toast.LENGTH_LONG).show()
-
                     }
                     is Resource.Loading -> {
-
+                        showProgressBar()
                     }
                 }
             })
 
-//            viewModel.movieDetailsList.observe(this) { movieList ->
-//                //movieAdapter.differ.submitList(movieList)
-//                viewModel.saveMovieDetailsList(movieList)
-//            }
+            viewModel.movieDetailsList.observe(this) { movieList ->
+                viewModel.saveMovieDetailsList(movieList)
+            }
 
         } else {
             loadFromCache()
@@ -85,16 +85,42 @@ class MovieDetailsActivity : AppCompatActivity() {
 
     }
 
+    private fun loadFromCache() {
+        viewModel.getMovieDetailFromDB().observe(this, Observer { filmDB ->
+            Log.i("internet","is off")
+            if (filmDB != null) {
+                setDataOnView(filmDB.Title,filmDB.Year,filmDB.Rated,filmDB.Released
+                    ,filmDB.BoxOffice,filmDB.Actors,filmDB.Country,filmDB.Director,
+                    filmDB.Genre,filmDB.Language,filmDB.Plot,filmDB.Runtime,
+                    filmDB.Type,filmDB.Website,filmDB.Writer,filmDB.Ratings,filmDB.Poster)
+            } else {
+                Toast.makeText(
+                    applicationContext,
+                    "there is no data please turn on your internet", Toast.LENGTH_SHORT
+                ).show()
+            }
+        })
+    }
+
+    private fun hideProgressBar() {
+        binding.paginationProgressBarDetails.visibility = View.INVISIBLE
+        isLoading = false
+    }
+
+    private fun showProgressBar() {
+        binding.paginationProgressBarDetails.visibility = View.VISIBLE
+        isLoading = true
+    }
+
     private fun setDataOnView(title: String, year: String
-                              , rated: String, release: String, boxOffice: String, actors: String
+                              , rated: String, imdbRating: String, boxOffice: String, actors: String
                               , country: String, director: String, genre: String, language: String,
                               plot: String, runTime: String, type: String, webSite: String, writers: String,
                               rating: List<Rating>, poster: String) {
         binding.tvMovieTitleDetails.text = title
         binding.tvMovieYearDetails.text = year
         binding.tvMovieAgeDetails.text = rated
-        //binding.tvMovieTitleDetails.text = release
-        //binding.tvMovieTitleDetails.text = boxOffice
+        binding.tvMovieRateImdbDetails.text = imdbRating
         binding.tvMovieCastDetails.text = actors
         binding.tvMovieCountryDetails.text = country
         binding.tvMovieDirectorDetails.text = director
@@ -102,40 +128,18 @@ class MovieDetailsActivity : AppCompatActivity() {
         binding.tvMovieLanguageDetails.text = language
         binding.tvMovieStoryDetails.text = plot
         binding.tvMovieTimeDetails.text = runTime
-        //binding.tvMovieTitleDetails.text = type
-        //binding.tvMovieTitleDetails.text = webSite
-        //binding.tvMovieTitleDetails.text = writers
+        binding.tvMovieWritersDetails.text = writers
         Glide.with(this).load(poster).into(binding.ivMoviePictureDetails)
-    }
-
-    private fun loadFromCache() {
-        viewModel.getMovieDetailFromDB().observe(this, Observer { filmDB ->
-            Log.i("internet","is off")
-            if (filmDB != null){
-                setDataOnView(filmDB.Title,filmDB.Year,filmDB.Rated,filmDB.Released
-                    ,filmDB.BoxOffice,filmDB.Actors,filmDB.Country,filmDB.Director,
-                    filmDB.Genre,filmDB.Language,filmDB.Plot,filmDB.Runtime,
-                    filmDB.Type,filmDB.Website,filmDB.Writer,filmDB.Ratings,filmDB.Poster)
-            }else {
-                Toast.makeText(
-                    applicationContext,
-                    "there is no data please turn on your internet", Toast.LENGTH_SHORT
-                ).show()
-            }
-
-        })
     }
 
     companion object {
 
         private const val EXTRA_VIDEO = "video_extra"
-
         fun showActivity(context: Context, imdbId: String) {
             val intent = Intent(context, MovieDetailsActivity::class.java)
             intent.putExtra(EXTRA_VIDEO, imdbId)
             context.startActivity(intent)
         }
-
     }
 
 }

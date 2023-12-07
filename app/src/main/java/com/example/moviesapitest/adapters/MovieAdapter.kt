@@ -21,12 +21,9 @@ class MovieAdapter(val onClick: (Search) -> Unit) : RecyclerView.Adapter<MovieAd
             itemView.apply {
                 Glide.with(this).load(movie.Poster).into(binding.ivMoviePicture)
             }
-
         }
 
     }
-    //lateinit var movieViewModel: MovieViewModel
-
 
     private val differCallBack = object : DiffUtil.ItemCallback<Search>() {
         override fun areItemsTheSame(oldItem: Search, newItem: Search): Boolean {
@@ -38,16 +35,13 @@ class MovieAdapter(val onClick: (Search) -> Unit) : RecyclerView.Adapter<MovieAd
         }
 
     }
-
     val differ = AsyncListDiffer(this , differCallBack)
-
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         return MovieViewHolder(ItemMoviesListBinding.inflate(
             LayoutInflater
             .from(parent.context),parent,false))
-
     }
 
     override fun getItemCount(): Int {
@@ -58,23 +52,9 @@ class MovieAdapter(val onClick: (Search) -> Unit) : RecyclerView.Adapter<MovieAd
         val movie = differ.currentList[position]
         holder.bindItem(movie)
 
-//        holder.itemView.apply {
-//            setOnClickListener {
-//                //onItemClickListener?.let { it(movie) }
-//                onClick(movie)
-//            }
-//        }
-
         holder.itemView.setOnClickListener {
             onClick(movie)
         }
-
     }
-
-//    private var onItemClickListener: ((Search) -> Unit)? = null
-//
-//    fun setOnItemClickListener(listener: (Search) -> Unit) {
-//        onItemClickListener = listener
-//    }
 
 }

@@ -49,7 +49,7 @@
                 android:layout_marginTop="8dp"
                 android:text="PG-13"
                 android:textColor="@color/black"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="@id/gl_ver_right_in_item_movie"
                 app:layout_constraintStart_toStartOf="@+id/tvMovieTitleDetails"
                 app:layout_constraintTop_toBottomOf="@+id/tvMovieTitleDetails" />
@@ -62,7 +62,7 @@
                 android:layout_marginTop="8dp"
                 android:text="120 m"
                 android:textColor="@color/black"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="@+id/tvMovieTitleDetails"
                 app:layout_constraintTop_toBottomOf="@+id/tvMovieAgeDetails" />
 
@@ -73,7 +73,7 @@
                 android:layout_marginStart="8dp"
                 android:text=" - "
                 android:textColor="@color/black"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 app:layout_constraintStart_toEndOf="@+id/tvMovieTimeDetails"
                 app:layout_constraintBottom_toBottomOf="@+id/tvMovieTimeDetails"
                 app:layout_constraintTop_toTopOf="@+id/tvMovieTimeDetails" />
@@ -85,7 +85,7 @@
                 android:layout_marginStart="8dp"
                 android:text="2022"
                 android:textColor="@color/black"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 app:layout_constraintStart_toEndOf="@+id/viewDash"
                 app:layout_constraintBottom_toBottomOf="@+id/tvMovieTimeDetails"
                 app:layout_constraintTop_toTopOf="@+id/tvMovieTimeDetails" />
@@ -97,7 +97,7 @@
                 android:layout_marginTop="8dp"
                 android:text="Action"
                 android:textColor="@color/black"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="@id/gl_ver_right_in_item_movie"
                 app:layout_constraintStart_toStartOf="@+id/tvMovieTimeDetails"
                 app:layout_constraintTop_toBottomOf="@+id/tvMovieTimeDetails" />
@@ -109,7 +109,7 @@
                 android:layout_marginTop="8dp"
                 android:text="Iran"
                 android:textColor="@color/black"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="@id/gl_ver_right_in_item_movie"
                 app:layout_constraintStart_toStartOf="@+id/tvMovieGenreDetails"
                 app:layout_constraintTop_toBottomOf="@+id/tvMovieGenreDetails" />
@@ -120,7 +120,7 @@
                 android:layout_height="wrap_content"
                 android:text="7.8/10"
                 android:textColor="@color/black"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="@+id/gl_ver_right_in_item_movie"
                 app:layout_constraintBottom_toBottomOf="@+id/gl_hor_bottom_introduction_in_item_movie" />
 
@@ -200,6 +200,30 @@
                 app:layout_constraintTop_toTopOf="@+id/tvMovieCastDetailsTitle" />
 
             <TextView
+                android:id="@+id/tvMovieWritersDetailsTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Writers: "
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"
+                app:layout_constraintStart_toStartOf="@+id/gl_ver_left_in_item_movie"
+                app:layout_constraintTop_toBottomOf="@+id/tvMovieCastDetails" />
+
+            <TextView
+                android:id="@+id/tvMovieWritersDetails"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Writers"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:layout_marginStart="6dp"
+                app:layout_constraintEnd_toEndOf="@id/gl_ver_right_in_item_movie"
+                app:layout_constraintStart_toEndOf="@+id/tvMovieWritersDetailsTitle"
+                app:layout_constraintTop_toTopOf="@+id/tvMovieWritersDetailsTitle" />
+
+            <TextView
                 android:id="@+id/tvMovieLanguageDetailsTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -209,7 +233,7 @@
                 android:textStyle="bold"
                 android:layout_marginTop="8dp"
                 app:layout_constraintStart_toStartOf="@+id/gl_ver_left_in_item_movie"
-                app:layout_constraintTop_toBottomOf="@+id/tvMovieCastDetails" />
+                app:layout_constraintTop_toBottomOf="@+id/tvMovieWritersDetails" />
 
             <TextView
                 android:id="@+id/tvMovieLanguageDetails"
@@ -255,5 +279,17 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/paginationProgressBarDetails"
+        style="?attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:background="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

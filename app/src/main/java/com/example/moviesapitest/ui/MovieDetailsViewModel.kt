@@ -31,11 +31,12 @@ class MovieDetailsViewModel(
             val response = movieDetailsRepository.getBatmanMoviesDetails(imdbID)
             if (response.isSuccessful) {
                 Log.d("dataState", "getBatmanMovies called  ")
-                //movieDetailsList.value = response.body()?.
                 movieDetails.postValue(Resource.Success(response.body()!!))
+                //movieDetailsList.value = response.body()?
+                //movieDetailsRepository.upsertMovieDetails(response.body()!!)
             } else {
                 // handle error
-                //movieDetails.postValue(Resource.Error("Error occurred"))
+                movieDetails.postValue(Resource.Error("Error occurred"))
             }
         } catch (e: Exception) {
             movieDetails.postValue(e.message?.let { Resource.Error(it) })
